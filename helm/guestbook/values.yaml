@@ -1,0 +1,32 @@
+namespace: grupp4
+
+images:
+  backend: "ghcr.io/bathrobebat/backend-DEV"
+  frontend: "ghcr.io/bathrobebat/frontend-DEV"
+  postgres: "quay.io/fedora/postgresql-16:latest"
+  redis: "quay.io/kurs/redis:latest"
+
+imagePullPolicy: IfNotPresent
+
+replicas:
+  backend: 2
+  frontend: 2
+
+storage:
+  postgresSize: 1Gi
+  redisSize: 1Gi
+
+db:
+  name: guestbook
+
+secrets:
+  dbUser: guestbook
+  dbPassword: superhemligt-losen        # ändra sen
+  redisPassword: annu-mer-hemligt       # ändra sen
+
+route:
+  enabled: true
+  host: ""   # låt OpenShift generera host
+  tls:
+    enabled: true
+    termination: edge
