@@ -17,12 +17,10 @@ storage:
   redisSize: 1Gi
 
 db:
-  name: guestbook
+  name: thed-guestbook
 
 secrets:
-  dbUser: guestbook
-  dbPassword: superhemligt-losen        # ändra sen
-  redisPassword: annu-mer-hemligt       # ändra sen
+  existingSecrets: guestbook-secrets
 
 route:
   enabled: true
