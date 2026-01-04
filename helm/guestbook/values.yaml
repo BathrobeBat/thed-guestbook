@@ -19,9 +19,6 @@ storage:
 db:
   name: thed-guestbook
 
-secrets:
-  existingSecrets: guestbook-secrets
-
 route:
   enabled: true
   host: ""   # låt OpenShift generera host
