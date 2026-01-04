@@ -45,7 +45,7 @@ spec:
       volumes:
         - name: postgres-storage
           persistentVolumeClaim: 
-            claimName: postgres-data
+            claimName: {{ .Release.Name }}-postgres-data
 ---
 apiVersion: v1
 kind: Service
