@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-data
+  name: {{ .Release.Name }}-postgres-data
   namespace: {{ include "guestbook.namespace" . }}
 spec:
   accessModes:
