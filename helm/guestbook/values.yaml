@@ -1,15 +1,13 @@
 namespace: grupp4
-
 externalSecrets:
   backend: backend-secrets
-  
 images:
   backend:
     repository: ghcr.io/bathrobebat/backend
-    tag: "945c730"
+    tag: "584ff2e"
   frontend:
     repository: ghcr.io/bathrobebat/frontend
-    tag: "945c730"
+    tag: "584ff2e"
   postgres: "quay.io/fedora/postgresql-16:latest"
   redis: "quay.io/kurs/redis:latest"
 imagePullPolicy: IfNotPresent
