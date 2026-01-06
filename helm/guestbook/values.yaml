@@ -1,8 +1,12 @@
 namespace: grupp4
 
 images:
-  backend: "ghcr.io/bathrobebat/backend:latest"
-  frontend: "ghcr.io/bathrobebat/frontend:latest"
+  backend:
+    repository: ghcr.io/bathrobebat/backend
+    tag: "main"
+  frontend:
+    repository: ghcr.io/bathrobebat/frontend
+    tag: "main"
   postgres: "quay.io/fedora/postgresql-16:latest"
   redis: "quay.io/kurs/redis:latest"
 
