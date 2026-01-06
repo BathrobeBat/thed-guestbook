@@ -1,3 +1,3 @@
 {{- define "guestbook.namespace" -}}
-{{- default .Release.Namespace .Values.namespace -}}
+{{ .Values.namespace -}}
 {{- end -}}
