@@ -4,10 +4,10 @@ externalSecrets:
 images:
   backend:
     repository: ghcr.io/bathrobebat/backend
-    tag: "584ff2e"
+    tag: "943b893"
   frontend:
     repository: ghcr.io/bathrobebat/frontend
-    tag: "584ff2e"
+    tag: "943b893"
   postgres: "quay.io/fedora/postgresql-16:latest"
   redis: "quay.io/kurs/redis:latest"
 imagePullPolicy: IfNotPresent
