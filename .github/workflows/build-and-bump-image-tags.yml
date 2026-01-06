@@ -46,8 +46,8 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: frontend/Dockerfile.frontend
+          context: ./frontend
+          file: ./frontend/Dockerfile.frontend
           push: true
           tags: |
             ghcr.io/bathrobebat/frontend:${{ steps.vars.outputs.sha_short }}
