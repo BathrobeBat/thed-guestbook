@@ -1,4 +1,8 @@
 namespace: grupp4
+
+externalSecrets:
+  backend: backend-secrets
+  
 images:
   backend:
     repository: ghcr.io/bathrobebat/backend
