@@ -2,10 +2,10 @@ namespace: grupp4
 images:
   backend:
     repository: ghcr.io/bathrobebat/backend
-    tag: "5400eaa"
+    tag: "f850ba9"
   frontend:
     repository: ghcr.io/bathrobebat/frontend
-    tag: "5400eaa"
+    tag: "f850ba9"
   postgres: "quay.io/fedora/postgresql-16:latest"
   redis: "quay.io/kurs/redis:latest"
 imagePullPolicy: IfNotPresent
