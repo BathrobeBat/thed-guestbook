@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: thed-backend
-  namespace: {{ include "guestbook.namespace" . }}
 spec:
   replicas: {{ .Values.replicas.backend }}
   selector:
