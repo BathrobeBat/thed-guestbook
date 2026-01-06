@@ -1,31 +1,25 @@
 namespace: grupp4
-
 images:
   backend:
     repository: ghcr.io/bathrobebat/backend
-    tag: "main"
+    tag: "abddd3d"
   frontend:
     repository: ghcr.io/bathrobebat/frontend
-    tag: "main"
+    tag: "abddd3d"
   postgres: "quay.io/fedora/postgresql-16:latest"
   redis: "quay.io/kurs/redis:latest"
-
 imagePullPolicy: IfNotPresent
-
 replicas:
   backend: 2
   frontend: 2
-
 storage:
   postgresSize: 1Gi
   redisSize: 1Gi
-
 db:
   name: thed-guestbook
-
 route:
   enabled: true
-  host: ""   # låt OpenShift generera host
+  host: "" # låt OpenShift generera host
   tls:
     enabled: true
     termination: edge
