@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: thed-frontend
   namespace: {{ include "guestbook.namespace" . }}
 spec:
   replicas: {{ .Values.replicas.frontend }}
