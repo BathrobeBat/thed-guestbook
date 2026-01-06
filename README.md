@@ -58,7 +58,7 @@ thed-guestbook/
 ```
 
 ## ArgoCD-konfiguration
-àrgocd/application.yaml` pekar på detta repo och Helm-chartet:
+`argocd/application.yaml` pekar på detta repo och Helm-chartet:
 ```
 spec:
   source:
