@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: thed-postgres
   namespace: {{ include "guestbook.namespace" . }}
 spec:
   replicas: 1
