@@ -1,50 +1,80 @@
-# thed-guestbook - GitOps-migrering med ArgoCD
+# thed-guestbook – My GitOps Journey with ArgoCD
 
-## Innehåll
-- Bakgrund
-- Mål
-- Arkitektur
-- Återanvändning av resurser
-- Repostruktur
-- ArgoCD-Konfiguration
-- GitOps-principer
-- Problem och åtgärder
-- Motivering av designval
-- Förbättringsförslag (säkerhet och prestanda)
-- Slutsats
+## Table of Contents
 
-## Bakgrund
-Detta projekt syftade till att migrera deploymenten av **thed-guestbook** från ett manuellt Helm/Kubectl-flöde till ett fullt GitOps-baserat arbetssätt med **ArgoCD**
+* Background
+* Project Goal
+* Architecture Overview
+* Reuse of Previous Work
+* Repository Structure
+* ArgoCD Application
+* GitOps in Practice
+* Problems I Encountered
+* Design Decisions
+* Future Improvements
+* Final Thoughts
 
-Tidigare flöde:
-`Developer → helm install / kubectl apply → Kubernetes`
+---
 
-Nytt flöde:
-`Git commit → ArgoCD → Kubernetes`
+## Background
 
-## Mål
-- Återanvända befintliga Docker images
-- Återanvända Helm-charts från tidigare repositories
-- Låta ArgoCD ta fullt ansvar för deployment
-- Eliminera manuell drift
-- Skapa ett reproducerbart och spårbart flöde
+In this project I migrated the deployment workflow for **thed-guestbook** from a manual Helm / kubectl based approach into a fully GitOps-driven solution using **ArgoCD**.
 
-## Arkitektur
-Git fungerar nu som **single source of truth**.
+Previously I deployed the application manually, which worked – but it was fragile, hard to reproduce and easy to break.
 
-Alla förändringar i klustret sker genom Git-commits som ArgoCD synkar automatiskt.
+Old flow:
 
-## Återanvändning av resurser
 ```
-Resurs            Ursprung
----               ---
-Docker images     Tidigare image-repo
-Helm charts       Tidigare helm-repo
-YAML-manifest     Modifierade versioner av befintliga
+Developer → helm install / kubectl apply → Kubernetes
 ```
-Detta minimerade duplicering och ökade stabiliteten i migreringen.
 
-## Repostruktur
+New flow:
+
+```
+Git commit → ArgoCD → Kubernetes
+```
+
+Now Git truly controls my cluster.
+
+---
+
+## Project Goal
+
+My main objectives were to:
+
+* Reuse Docker images from my earlier projects
+* Reuse and adapt my existing Helm charts
+* Let ArgoCD take over full responsibility for deployments
+* Eliminate configuration drift
+* Build something that is repeatable, transparent and production-like
+
+---
+
+## Architecture Overview
+
+The cluster is now continuously reconciled by ArgoCD.
+If something changes in the cluster that is not in Git, ArgoCD corrects it automatically.
+
+Git is the **single source of truth**.
+
+---
+
+## Reuse of Previous Work
+
+Instead of rebuilding everything from scratch, I reused:
+
+| Resource       | Source                               |
+| -------------- | ------------------------------------ |
+| Docker images  | My earlier image repository          |
+| Helm charts    | My previous Helm chart repo          |
+| YAML manifests | Refactored versions of old manifests |
+
+This significantly reduced the workload and forced me to design reusable components.
+
+---
+
+## Repository Structure
+
 ```
 thed-guestbook/
 ├── argocd/
@@ -57,9 +87,13 @@ thed-guestbook/
 └── README.md
 ```
 
-## ArgoCD-konfiguration
-`argocd/application.yaml` pekar på detta repo och Helm-chartet:
-```
+---
+
+## ArgoCD Application
+
+The ArgoCD Application points directly to this repository and the Helm chart:
+
+```yaml
 spec:
   source:
     repoURL: https://github.com/<user>/thed-guestbook.git
@@ -69,86 +103,100 @@ spec:
       valueFiles:
         - values.yaml
 ```
-Automatisk synk är aktiverad med `selfheal`och `prune`.
 
-## GitOps-principer
-- Git är alltid sanning
-- Ingen manuell deployment i klustret
-- Alla ändringar sker via Pull Requests
-- Rollback = Git revert
-
-## Problem och lösningar
-**Helm-beroenden**
-
-Tidigare charts krävde CLI-flaggar.
-
-**Lösning:** Alla värden flyttades till `values.yaml`.
-
----
-**Image-drift (`latest`)**
-
-Orsakade oförutsägbara uppdateringar.
-
-**Lösning:** Versionspinnande images
+Automated sync with `selfHeal` and `prune` enabled means the cluster is always aligned with Git.
 
 ---
 
-**ArgoCD-synkproblem**
+## GitOps in Practice
 
-Fel namespaces och defaults.
+Working this way changed how I think about Kubernetes:
 
-**Lösning:** Explicit namespace + aktiverad `selfheal` och `prune`.
-
----
-
-**Återanvändning av repos**
-
-Hårdkodade paths mellan repos
-
-**Lösning:** Modularisering och konsekventa Git-URL-referenser.
-
-## Motivering av designval
-
-```
-Val                        Motivering
----                        ---
-ArgoCD                     Standard för GitOps
-Helm                       Parametrisering och återanvändning
-Ett app-repo               Tydligare single source of truth
-Versionspinnande images    Reproducerbara releaser
-```
-
-## Förbättringsförslag
-**Säkerhet**
-```
-Förslag                          Effekt
----                              ---
-SealedSecrets/ExternalSecrets    Inga hemligheter i Git
-RBAC-härdning i ArgoCD           Mindre attackyta
-Image scanning (Trivy)           Stoppa sårbara images
-NetworkPolicies                  Isolera applikationen
-Stäng av admin-login i ArgoCD    Ökad säkerhet
-```
+* I no longer deploy manually
+* Every change is a Git commit
+* Rollback is simply `git revert`
+* The cluster state is never a mystery
 
 ---
 
-**Prestanda**
-```
-Förslag                          Effekt
----                              ---
-HPA                              Automatisk skalning
-Resource limits/requests         Stabilare pods
-Liveness/readiness probes        Snabbare återhämtning
-Argo Rollouts (blue/green)       Noll-downtime deploy
-Cache-strategier                 Lägre svarstider
-```
+## Problems I Encountered
 
-## Slutsats
-Migreringen till GitOps med ArgoCD har gjort **thed-guestbook**
-- Mer pålitlig
-- Enklare att underhålla
-- Fullt versionsstyrd
+### Helm Charts Not Designed for GitOps
 
-Projektet utgör nu en stabil grund för framtida vidareutveckling och CI/CD-automatisering.
+Some charts expected CLI overrides.
 
-Det gick inte helt smärtfritt i början men under arbetets gång lärde jag mig mycket som gör att liknande projekt kommer gå betydligt snabbare att genomföra i framtiden.
+**Fix:**
+Everything was moved into `values.yaml` so ArgoCD could deploy without manual flags.
+
+---
+
+### Image Drift Caused by `latest`
+
+Using `latest` tags resulted in unexpected updates.
+
+**Fix:**
+All images are now version-pinned.
+
+---
+
+### ArgoCD Sync Issues
+
+I initially had drift due to namespaces and Helm defaults.
+
+**Fix:**
+Explicit namespaces were defined and automated sync with self-healing was enabled.
+
+---
+
+### Reusing Multiple Repositories
+
+Older repos were tightly coupled with hard-coded paths.
+
+**Fix:**
+Charts were modularized and referenced through Git URLs instead of local paths.
+
+---
+
+## Design Decisions
+
+| Choice                  | Reason                              |
+| ----------------------- | ----------------------------------- |
+| ArgoCD                  | Industry standard GitOps controller |
+| Helm                    | Flexible templating and reuse       |
+| Single application repo | Clear source of truth               |
+| Version-pinned images   | Predictable releases                |
+
+---
+
+## Future Improvements
+
+### Security
+
+* Introduce SealedSecrets or ExternalSecrets
+* Harden ArgoCD RBAC
+* Add Trivy image scanning in CI
+* Add NetworkPolicies
+* Disable ArgoCD admin login
+
+### Performance
+
+* Add HPA for autoscaling
+* Define resource limits and requests
+* Add readiness and liveness probes
+* Use Argo Rollouts for blue/green deployments
+* Introduce caching where possible
+
+---
+
+## Final Thoughts
+
+This project clearly showed me the real power of GitOps.
+
+What started as “just another Kubernetes app” has now become a:
+
+* Fully version-controlled system
+* Self-healing environment
+* Reproducible deployment pipeline
+
+This GitOps foundation will make future development, debugging and scaling significantly easier.
+
